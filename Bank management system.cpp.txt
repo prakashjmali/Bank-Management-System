@@ -1,0 +1,184 @@
+#include<iostream>
+#include<string.h>
+#include<stdlib.h>
+using namespace std;
+struct Logindetails
+{
+char usrname[10];
+char pwd[10];
+float balance;
+struct Logindetails *next;
+};
+struct Logindetails *head=new Logindetails;
+struct Logindetails NewNode(char usrname[10],char pwd[10])
+{
+struct Logindetails *ptr = new Logindetails;
+strcpy(ptr->usrname,usrname);
+strcpy(ptr->pwd,pwd);
+ptr->balance=0;
+ptr->next = NULL;
+return *ptr;
+}
+void displayusers(struct Logindetails *head)
+{
+struct Logindetails *ptr=new Logindetails;
+ptr=head;
+while(ptr!=NULL)
+{
+cout<<"Username: "<<ptr->usrname<<" Password: "<<ptr->pwd<<endl;
+ptr=ptr->next;
+}
+delete ptr;
+}
+int traverse(struct Logindetails *head,char temp[10])
+{
+struct Logindetails *ptr=new Logindetails;
+ptr=head;
+while(strcmp(ptr->usrname,temp)!=0)
+{
+if(ptr->next==NULL)
+return 1;
+ptr=ptr->next;
+}
+return 0;
+}
+struct Logindetails search(struct Logindetails *head,char temp[10])
+{
+struct Logindetails *ptr=new Logindetails;
+ptr=head;
+while(1)
+{
+if(strcmp(ptr->usrname,temp)==0)
+return *ptr;
+ptr=ptr->next;
+}
+}
+void signup(struct Logindetails *head)
+{
+char temp[10] , pwd[10];
+struct Logindetails *ptr=new Logindetails;
+ptr=head;
+while(ptr->next!=NULL)
+{
+ptr=ptr->next;
+}
+struct Logindetails *lptr=new Logindetails;
+cout<<"Username: ";
+cin>>temp;
+int x=traverse(head,temp);
+if(x==1)
+{
+cout<<"Password: ";
+cin>>pwd;
+*lptr = NewNode(temp , pwd);
+ptr->next =lptr;
+cout<<"Account created Successfully\n";
+}
+else
+{
+cout<<"user already exist\n";
+}
+//delete ptr;
+}
+void deposit(struct Logindetails *current)
+{
+float amt;
+cout<<"Deposit Amount: ";
+cin>>amt;
+current->balance=current->balance+amt;
+cout<<"Amount credited is "<<amt<<endl<<"Balance: "<<current->balance<<endl;
+}
+void withdrawl(struct Logindetails *current)
+{
+float amt;
+cout<<"Withdrawl Amount: ";
+cin>>amt;
+current->balance=current->balance-amt;
+cout<<"Amount debited is "<<amt<<endl<<"Balance: "<<current->balance<<endl;
+}
+void login(struct Logindetails *head)
+{
+char temp[10];
+cout<<"Username: ";
+cin>>temp;
+int x=traverse(head,temp);
+if(x==1)
+{
+cout<<"User not found\n";
+}
+else
+{
+struct Logindetails *current =new Logindetails;
+*current=search(head,temp);
+cout<<"Password: ";
+cin>>temp;
+if(strcmp(current->pwd,temp)==0)
+{
+cout<<"logged in Successfully\n";
+while(1)
+{
+cout<<" 1.Deposit\n 2.Withdrawl\n 3.Balance\n4.Exit\n";
+cin>>x;
+switch(x)
+{
+case 1:
+{
+deposit(current);
+break;
+}
+case 2:
+{
+withdrawl(current);
+break;
+}
+case 3:
+{
+cout<<"Balance: "<<current->balance<<endl;
+break;
+}
+case 4:
+{
+exit(1);
+}
+}
+}
+}
+else
+cout<<"Wrong Password\n";
+}
+}
+int main()
+{
+*head = NewNode("admin","admin");
+head->next=NULL;
+int choice=0;
+while(1)
+{
+cout<<"################## Welcome to RAD Online Banking Portal##################\n"<<" 1.Sign up\n 2.Log in\n 3.RegisteredUser List\n 4.exit\n";
+cout<<"Enter your choice: ";
+cin>>choice;
+switch(choice)
+{
+case 1:
+{
+signup(head);
+break;
+}
+case 2:
+{
+login(head);
+break;
+}
+case 3:
+{
+//printf("123");
+displayusers(head);
+break;
+}
+case 4:
+{
+exit(1);
+}
+}
+}
+}
